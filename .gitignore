@@ -1,0 +1,6 @@
+# Exclude virtual environment folder
+.venv-iahris/
+
+# Exclude folders
+ejemplos/
+otros/
