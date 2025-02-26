@@ -1,2 +1,2 @@
 # SWATPlus-IAHRIS
- A software that connects SWATPlus with IAHRIS to automatically generate river alteration indicator reports.
+ A software that links SWATPlus to IAHRIS to automatically generate reports on Indicators of Hydrologic Alteration in RIverS.
