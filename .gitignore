@@ -4,3 +4,5 @@
 # Exclude folders
 ejemplos/
 otros/
+output/
+resources/
