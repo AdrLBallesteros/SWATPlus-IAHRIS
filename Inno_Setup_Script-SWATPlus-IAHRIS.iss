@@ -25,7 +25,7 @@ DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 OutputDir=C:\PROGRAMACION\SWATPlus-IAHRIS\output\installer
-OutputBaseFilename=SWATPlus-IAHRIS_1.0beta_Setup
+OutputBaseFilename=SWATPlus-IAHRIS_1.0_Setup
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -37,14 +37,14 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\PROGRAMACION\SWATPlus-IAHRIS\output\main.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\PROGRAMACION\SWATPlus-IAHRIS\output\SWATPlus-IAHRIS.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\PROGRAMACION\SWATPlus-IAHRIS\resources\*"; DestDir: "C:\"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{autoprograms}\SWATPlus-IAHRIS"; Filename: "{app}\main.exe"
-Name: "{autodesktop}\SWATPlus-IAHRIS"; Filename: "{app}\main.exe"; Tasks: desktopicon
+Name: "{autoprograms}\SWATPlus-IAHRIS"; Filename: "{app}\SWATPlus-IAHRIS.exe"
+Name: "{autodesktop}\SWATPlus-IAHRIS"; Filename: "{app}\SWATPlus-IAHRIS.exe"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\main.exe"; Description: "{cm:LaunchProgram,SWATPlus-IAHRIS}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\SWATPlus-IAHRIS.exe"; Description: "{cm:LaunchProgram,SWATPlus-IAHRIS}"; Flags: nowait postinstall skipifsilent
 
