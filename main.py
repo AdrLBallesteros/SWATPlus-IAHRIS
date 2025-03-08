@@ -6,6 +6,8 @@ import pandas as pd
 import subprocess
 import shutil
 from datetime import datetime
+import xlwings
+import glob
 
 
 # https://stackoverflow.com/questions/7674790/bundling-data-files-with-pyinstaller-onefile/13790741#13790741
@@ -39,6 +41,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.pushButton_reports.clicked.connect(self.generate_reports)
 
+        self.radioButton_swat_nat.toggled.connect(self.reset_var_nat)
+        self.radioButton_swat_alt.toggled.connect(self.reset_var_alt)
+
         # Deactivate SWAT+ parts of the GUI
         self.swatplus_nat.setEnabled(False)
         self.swatplus_alt.setEnabled(False)
@@ -46,6 +51,36 @@ class MainWindow(QtWidgets.QMainWindow):
         self.altered.setEnabled(False)
         # Deactivate the reports button
         self.pushButton_reports.setEnabled(False)
+
+    def reset_var_nat(self):
+        """Reset variables when the nat radio button is toggled"""
+
+        # Reset the folder and comboBox
+        folder = None
+        self.lineEdit_nat.setText(folder)
+        self.comboBox_scenario_nat.clear()
+        self.swatplus_nat.setEnabled(False)
+        self.comboBox_channel_nat.clear()
+        self.DateEdit_start_year_nat.setDate(QDate(2000, 1, 1))
+        self.DateEdit_finish_year_nat.setDate(QDate(2000, 1, 1))
+
+        # Reset SWAT+ parts of the GUI
+        self.swatplus_nat.setEnabled(False)
+
+    def reset_var_alt(self):
+        """Reset variables when the alt radio button is toggled"""
+        # Reset the folder and comboBox
+        folder = None
+        self.lineEdit_alt.setText(folder)
+        self.comboBox_scenario_alt.clear()
+        self.swatplus_alt.setEnabled(False)
+        self.comboBox_channel_alt.clear()
+        self.DateEdit_start_year_alt.setDate(QDate(2000, 1, 1))
+        self.DateEdit_finish_year_alt.setDate(QDate(2000, 1, 1))
+
+        # Reset the SWAT+ parts of the GUI and reports button
+        self.pushButton_reports.setEnabled(False)
+        self.swatplus_alt.setEnabled(False)
 
     def select_file_nat(self):
         """Open folder or file for nat input"""
@@ -599,6 +634,32 @@ IAHRIS.exe GIS /t:A /np:"{scenario_nat_short}" /na:"{scenario_alt_short}" /p:"{p
 
         # Remove the temp folder
         shutil.rmtree("C:\\SWATPlus-IAHRIS\\temp")
+
+        self.progressBar.setValue(90)
+
+        # Get the list of .xlsx files in the report_folder
+        xlsx_files = glob.glob(os.path.join(report_folder, "*.xlsx"))
+
+        if xlsx_files:
+            # Get the last generated .xlsx file
+            last_generated_xlsx = max(xlsx_files, key=os.path.getctime)
+
+            # Open the workbook and select the first sheet
+            app = xlwings.App(visible=False)
+            workbook = app.books.open(last_generated_xlsx)
+            sheet = workbook.sheets[0]
+
+            # Change the values of the cells
+            sheet["AA1"].value = "Nat_F"
+            sheet["AA2"].value = "Alt_F"
+            sheet["AB1"].value = "Natural Flow"
+            sheet["AB2"].value = "Altered Flow"
+            sheet["E3"].value = ""
+
+            # Save the changes to the workbook
+            workbook.save()
+            workbook.close()
+            app.quit()
 
         # Open the report folder
         os.startfile(report_folder)
