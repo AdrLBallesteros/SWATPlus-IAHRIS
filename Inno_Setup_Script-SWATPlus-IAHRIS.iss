@@ -6,7 +6,7 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{F596978E-F50F-44F6-9D87-E0E90718170E}
 AppName=SWATPlus-IAHRIS
-AppVersion=1.0
+AppVersion=1.1
 ;AppVerName=SWATPlus-IAHRIS 1.0
 AppPublisher=Adrian Lopez-Ballesteros
 AppPublisherURL=https://github.com/AdrLBallesteros
@@ -25,7 +25,7 @@ DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 OutputDir=C:\PROGRAMACION\SWATPlus-IAHRIS\output\installer
-OutputBaseFilename=SWATPlus-IAHRIS_1.0_Setup
+OutputBaseFilename=SWATPlus-IAHRIS_1.1_Setup
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -37,14 +37,14 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\PROGRAMACION\SWATPlus-IAHRIS\output\SWATPlus-IAHRIS.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\PROGRAMACION\SWATPlus-IAHRIS\output\SWATPlus-IAHRIS_v1.1.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\PROGRAMACION\SWATPlus-IAHRIS\resources\*"; DestDir: "C:\"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{autoprograms}\SWATPlus-IAHRIS"; Filename: "{app}\SWATPlus-IAHRIS.exe"
-Name: "{autodesktop}\SWATPlus-IAHRIS"; Filename: "{app}\SWATPlus-IAHRIS.exe"; Tasks: desktopicon
+Name: "{autoprograms}\SWATPlus-IAHRIS"; Filename: "{app}\SWATPlus-IAHRIS_v1.1.exe"
+Name: "{autodesktop}\SWATPlus-IAHRIS"; Filename: "{app}\SWATPlus-IAHRIS_v1.1.exe"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\SWATPlus-IAHRIS.exe"; Description: "{cm:LaunchProgram,SWATPlus-IAHRIS}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\SWATPlus-IAHRIS_v1.1.exe"; Description: "{cm:LaunchProgram,SWATPlus-IAHRIS}"; Flags: nowait postinstall skipifsilent
 

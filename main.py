@@ -25,7 +25,7 @@ def resource_path(relative_path):
 # Define a MainWindow class that inherits from QMainWindow
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
-        """Constructor of the SWATPlus-IAHRIS software"""
+        """Constructor of the SWATPlus-IAHRIS software - Main Window"""
 
         super().__init__()
 
@@ -33,7 +33,7 @@ class MainWindow(QtWidgets.QMainWindow):
         uic.loadUi(resource_path("GUI.ui"), self)
 
         # Connect click events to a function
-        self.pushButton_nat.clicked.connect(self.select_file_nat)
+        self.pushButton_nat.clicked.connect(self.reset_select_file_nat)
         self.comboBox_scenario_nat.activated.connect(self.select_Scenario_nat)
 
         self.pushButton_alt.clicked.connect(self.select_file_alt)
@@ -66,6 +66,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Reset SWAT+ parts of the GUI
         self.swatplus_nat.setEnabled(False)
+        self.pushButton_nat.setEnabled(True)
 
     def reset_var_alt(self):
         """Reset variables when the alt radio button is toggled"""
@@ -86,10 +87,19 @@ class MainWindow(QtWidgets.QMainWindow):
         """Open folder or file for nat input"""
 
         if self.radioButton_swat_nat.isChecked():
-            # Open SWAT Scenario folder
-            folder = QtWidgets.QFileDialog.getExistingDirectory(
-                self, "Select SWAT+ 'Scenarios' folder", ""
-            )
+
+            if self.lineEdit_nat.text() == None or self.lineEdit_nat.text() == "":
+                path = self.lineEdit_nat.text()
+                # Open SWAT Scenario folder from GUI
+                folder = QtWidgets.QFileDialog.getExistingDirectory(
+                    self, "Select SWAT+ 'Scenarios' folder", path
+                )
+
+            else:
+                # Open SWAT Scenario folder from CLI
+                folder = self.lineEdit_nat.text()
+                self.pushButton_nat.setEnabled(False)
+
             # Check if the folder is SWAT+ Scenarios folder
             if folder and folder.endswith("Scenarios"):
                 self.lineEdit_nat.setText(folder)
@@ -143,7 +153,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     QtWidgets.QMessageBox.warning(
                         self,
                         "Invalid Date Frequency",
-                        "The 'Date' column must have a daily frequency without any gaps. Please ensure the dates are consecutive and there are no missing days.",
+                        "The 'Date' column must have a daily frequency without any gaps. Please ensure the dates are consecutive and there are no missing days. Also, verify that the last row in the file is correct and that there are no gaps.",
                     )
                     reset = None
                     self.lineEdit_nat.setText(reset)
@@ -170,6 +180,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
                 # Activate the altered flow inputs
                 self.altered.setEnabled(True)
+
+    def reset_select_file_nat(self):
+        """Pass multiple methods as argument - Reset the natural flow inputs and select the SWAT+ scenario"""
+        self.reset_var_nat()
+        self.select_file_nat()
 
     def select_Scenario_nat(self):
         """Select the SWAT+ scenario from the comboBox"""
@@ -220,9 +235,10 @@ class MainWindow(QtWidgets.QMainWindow):
         """Open folder or file for alt input"""
 
         if self.radioButton_swat_alt.isChecked():
+            path = self.lineEdit_nat.text()
             # Open SWAT Scenario folder
             folder = QtWidgets.QFileDialog.getExistingDirectory(
-                self, "Select SWAT+ 'Scenarios' folder", ""
+                self, "Select SWAT+ 'Scenarios' folder", path
             )
             # Check if the folder is SWAT+ Scenarios folder
             if folder and folder.endswith("Scenarios"):
@@ -358,6 +374,20 @@ class MainWindow(QtWidgets.QMainWindow):
     def generate_reports(self):
         """Generate IAHRIS reports"""
 
+        # Check the start and finish years of both nat and alt period
+        start_year_nat = self.DateEdit_start_year_nat.date().year()
+        end_year_nat = self.DateEdit_finish_year_nat.date().year()
+        start_year_alt = self.DateEdit_start_year_alt.date().year()
+        end_year_alt = self.DateEdit_finish_year_alt.date().year()
+
+        if end_year_nat - start_year_nat < 14 or end_year_alt - start_year_alt < 14:
+            QtWidgets.QMessageBox.warning(
+                self,
+                "Invalid selected periods",
+                "The selected periods for analysis must cover at least 15 consecutive years. Please adjust the start and end years to ensure that both periods are 15 years or longer.",
+            )
+            return
+
         # Check if the 'SWATPlus-IAHRIS' folder and 'temp' folder exist
         if not os.path.exists("C:\\SWATPlus-IAHRIS"):
             QtWidgets.QMessageBox.warning(
@@ -434,7 +464,7 @@ class MainWindow(QtWidgets.QMainWindow):
             if df["Date"].iloc[-1] == "31/12/{}".format(end_year):
                 # Add one more day to the complete year (to take into account the last year of data)
                 next_day = pd.DataFrame(
-                    [["01/01/{}".format(end_year + 1), "", ""]], columns=df.columns
+                    [["01/01/{}".format(end_year + 1), "0.00", ""]], columns=df.columns
                 )
                 df = pd.concat([df, next_day], ignore_index=True)
 
@@ -484,7 +514,7 @@ class MainWindow(QtWidgets.QMainWindow):
             if df["Date"].iloc[-1] == "31/12/{}".format(end_year):
                 # Add one more day to the complete year (to take into account the last year of data)
                 next_day = pd.DataFrame(
-                    [["01/01/{}".format(end_year + 1), "", ""]], columns=df.columns
+                    [["01/01/{}".format(end_year + 1), "0.00", ""]], columns=df.columns
                 )
                 df = pd.concat([df, next_day], ignore_index=True)
 
@@ -542,7 +572,8 @@ class MainWindow(QtWidgets.QMainWindow):
             if df["Date"].iloc[-1] == "31/12/{}".format(end_year):
                 # Add one more day to the complete year (to take into account the last year of data)
                 next_day = pd.DataFrame(
-                    [["01/01/{}".format(end_year + 1), "", "", ""]], columns=df.columns
+                    [["01/01/{}".format(end_year + 1), "0.00", "", ""]],
+                    columns=df.columns,
                 )
                 df = pd.concat([df, next_day], ignore_index=True)
 
@@ -593,7 +624,8 @@ class MainWindow(QtWidgets.QMainWindow):
             if df["Date"].iloc[-1] == "31/12/{}".format(end_year):
                 # Add one more day to the complete year (to take into account the last year of data)
                 next_day = pd.DataFrame(
-                    [["01/01/{}".format(end_year + 1), "", "", ""]], columns=df.columns
+                    [["01/01/{}".format(end_year + 1), "0.00", "", ""]],
+                    columns=df.columns,
                 )
                 df = pd.concat([df, next_day], ignore_index=True)
 
@@ -640,29 +672,241 @@ IAHRIS.exe GIS /t:A /np:"{scenario_nat_short}" /na:"{scenario_alt_short}" /p:"{p
         # Get the list of .xlsx files in the report_folder
         xlsx_files = glob.glob(os.path.join(report_folder, "*.xlsx"))
 
-        if xlsx_files:
-            # Get the last generated .xlsx file
-            last_generated_xlsx = max(xlsx_files, key=os.path.getctime)
+        try:
+            if xlsx_files:
+                # Get the last generated .xlsx file
+                last_generated_xlsx = max(xlsx_files, key=os.path.getctime)
 
-            # Open the workbook and select the first sheet
-            app = xlwings.App(visible=False)
-            workbook = app.books.open(last_generated_xlsx)
-            sheet = workbook.sheets[0]
+                # Open the workbook and select the first sheet
+                app = xlwings.App(visible=False)
+                workbook = app.books.open(last_generated_xlsx)
+                sheet = workbook.sheets[0]
 
-            # Change the values of the cells
-            sheet["AA1"].value = "Nat_F"
-            sheet["AA2"].value = "Alt_F"
-            sheet["AB1"].value = "Natural Flow"
-            sheet["AB2"].value = "Altered Flow"
-            sheet["E3"].value = ""
+                # Change the values of the cells
+                sheet["AA1"].value = "Nat_F"
+                sheet["AA2"].value = "Alt_F"
+                sheet["AB1"].value = "Natural Flow"
+                sheet["AB2"].value = "Altered Flow"
+                sheet["E3"].value = ""
+                sheet["E4"].value = ""
 
-            # Save the changes to the workbook
-            workbook.save()
-            workbook.close()
+                # Save the changes to the workbook
+                workbook.save()
+                workbook.close()
+                app.quit()
+        except:
+            QtWidgets.QMessageBox.warning(
+                self,
+                "Excel File Access Error",
+                "Please ensure that all Excel files are closed before continuing. If the problem persists, check for any background Excel processes and try again.",
+            )
+            self.progressBar.setValue(0)
+            return
+
+        # # Open the report folder
+        # os.startfile(report_folder)
+
+        self.progressBar.setValue(0)
+
+        self.reports_window = ReportsWindow(last_generated_xlsx, report_folder)
+        self.reports_window.show()
+
+
+class ReportsWindow(QtWidgets.QMainWindow):
+    def __init__(self, last_generated_xlsx, report_folder):
+        """Constructor of the SWATPlus-IAHRIS software - Report Window"""
+        super().__init__()
+        uic.loadUi(resource_path("reports.ui"), self)
+
+        # Variables from the main window
+        self.last_generated_xlsx = last_generated_xlsx  # Master report file
+        self.report_folder = report_folder  # Selected folder to save the reports
+
+        self.pushButton_print.clicked.connect(self.on_print_button_clicked)
+
+    def extract_selected_sheets_to_excel(self, selected_sheet_names, output_excel_path):
+        """Extract selected reports from the master report."""
+
+        app = xlwings.App(visible=False)
+        try:
+            wb = app.books.open(self.last_generated_xlsx)
+            # print([s.name for s in wb.sheets])
+            # Create a new workbook
+            new_wb = app.books.add()
+
+            # Copy selected sheets
+            for sheet_name in selected_sheet_names:
+                if sheet_name in [s.name for s in wb.sheets]:
+                    wb.sheets[sheet_name].copy(
+                        after=new_wb.sheets[-1] if new_wb.sheets else None
+                    )
+            # Delete default sheet
+            new_wb.sheets[0].delete()
+
+            # Save the new workbook
+            new_wb.save(output_excel_path)
+            new_wb.close()
+            wb.close()
+        finally:
             app.quit()
 
+    def rename_sheets_in_excel(self, output_excel_path):
+
+        rename_dict = {
+            "REPORTS": "Reports",
+            "Informe nº1": "Report_n1",
+            "Informe nº1a": "Report_n1a",
+            "Informe nº 1b": "Report_n1b",
+            "Informe nº 2": "Report_n2",
+            "Informe nº2a": "Report_n2a",
+            "Informe nº3": "Report_n3",
+            "Informe nº3a": "Report_n3a",
+            "Informe nº 3b": "Report_n3b",
+            "Informe nº3c": "Report_n3c",
+            "Informe nº4": "Report_n4",
+            "Informe nº5": "Report_n5",
+            "Informe nº 6": "Report_n6",
+            "Informe nº 6a": "Report_n6a",
+            "Informe nº6b": "Report_n6b",
+            "Informe nº6c": "Report_n6c",
+            "Informe nº6d": "Report_n6d",
+            "Informe nº6e": "Report_n6e",
+            "Informe nº 7a": "Report_n7a",
+            "Informe nº 7c": "Report_n7c",
+            "Informe nº 7d": "Report_n7d",
+            "Informe nº 8": "Report_n8",
+            "Informe nº8b": "Report_n8b",
+            "Informe nº10a": "Report_n10a",
+            "Informe nº 10c": "Report_n10c",
+        }
+
+        app = xlwings.App(visible=False)
+        try:
+            wb = app.books.open(output_excel_path)
+            for old_name, new_name in rename_dict.items():
+                for sheet in wb.sheets:
+                    if sheet.name == old_name:
+                        sheet.name = new_name
+            wb.save()
+            wb.close()
+        finally:
+            app.quit()
+
+    def on_print_button_clicked(self):
+        """Extract reports based on the selected checkboxes (themes)."""
+        if self.checkBox_nat.isChecked():
+            selected_sheet_names = [
+                "Informe nº1",
+                "Informe nº 2",
+                "Informe nº2a",
+                "Informe nº4",
+            ]
+            output_excel_path = (
+                self.report_folder
+                + "\\SWATPlus-IAHRIS_Natural_Flow_Characterization.xlsx"
+            )
+            self.extract_selected_sheets_to_excel(
+                selected_sheet_names, output_excel_path
+            )
+            self.rename_sheets_in_excel(output_excel_path)
+            self.label_nat.setText("✓")
+        self.progressBar.setValue(10)
+
+        if self.checkBox_alt.isChecked():
+            selected_sheet_names = [
+                "Informe nº1a",
+                "Informe nº3",
+                "Informe nº3a",
+                "Informe nº5",
+            ]
+            output_excel_path = (
+                self.report_folder
+                + "\\SWATPlus-IAHRIS_Altered_Flow_Characterization.xlsx"
+            )
+            self.extract_selected_sheets_to_excel(
+                selected_sheet_names, output_excel_path
+            )
+            self.rename_sheets_in_excel(output_excel_path)
+            self.label_alt.setText("✓")
+        self.progressBar.setValue(30)
+        if self.checkBox_nat_alt.isChecked():
+            selected_sheet_names = [
+                "Informe nº 1b",
+                "Informe nº 3b",
+                "Informe nº3c",
+                "Informe nº 8",
+                "Informe nº8a",
+            ]
+            output_excel_path = (
+                self.report_folder
+                + "\\SWATPlus-IAHRIS_Natural-Altered_Flow_Comparison.xlsx"
+            )
+            self.extract_selected_sheets_to_excel(
+                selected_sheet_names, output_excel_path
+            )
+            self.rename_sheets_in_excel(output_excel_path)
+            self.label_nat_alt.setText("✓")
+        self.progressBar.setValue(40)
+        if self.checkBox_curves.isChecked():
+            selected_sheet_names = [
+                "Informe nº 6",
+                "Informe nº 6a",
+                "Informe nº6b",
+                "Informe nº6c",
+                "Informe nº6d",
+                "Informe nº6e",
+            ]
+            output_excel_path = (
+                self.report_folder + "\\SWATPlus-IAHRIS_Flow_Rates_Duration_Curves.xlsx"
+            )
+            self.extract_selected_sheets_to_excel(
+                selected_sheet_names, output_excel_path
+            )
+            self.rename_sheets_in_excel(output_excel_path)
+            self.label_curves.setText("✓")
+        self.progressBar.setValue(60)
+        if self.checkBox_habitual.isChecked():
+            selected_sheet_names = [
+                "Informe nº 7a",
+                "Informe nº 7c",
+            ]
+            output_excel_path = (
+                self.report_folder + "\\SWATPlus-IAHRIS_IHA_Habitual_Values.xlsx"
+            )
+            self.extract_selected_sheets_to_excel(
+                selected_sheet_names, output_excel_path
+            )
+            self.rename_sheets_in_excel(output_excel_path)
+            self.label_habitual.setText("✓")
+        self.progressBar.setValue(70)
+        if self.checkBox_floods.isChecked():
+            selected_sheet_names = [
+                "Informe nº 7d",
+            ]
+            output_excel_path = (
+                self.report_folder + "\\SWATPlus-IAHRIS_IHA_Floods_Droughts.xlsx"
+            )
+            self.extract_selected_sheets_to_excel(
+                selected_sheet_names, output_excel_path
+            )
+            self.rename_sheets_in_excel(output_excel_path)
+            self.label_floods.setText("✓")
+        self.progressBar.setValue(90)
+        if self.checkBox_sign.isChecked():
+            selected_sheet_names = ["Informe nº10a", "Informe nº 10c"]
+            output_excel_path = (
+                self.report_folder
+                + "\\SWATPlus-IAHRIS_IHA_Environmental_Significance.xlsx"
+            )
+            self.extract_selected_sheets_to_excel(
+                selected_sheet_names, output_excel_path
+            )
+            self.rename_sheets_in_excel(output_excel_path)
+            self.label_sign.setText("✓")
+        self.progressBar.setValue(100)
+
         # Open the report folder
-        os.startfile(report_folder)
+        os.startfile(self.report_folder)
 
         self.progressBar.setValue(0)
 
@@ -675,6 +919,15 @@ if __name__ == "__main__":
 
     # Create an instance of the MainWindow class
     window = MainWindow()
+
+    # Check if a folder path is passed as a command-line argument
+    if len(sys.argv) > 1:
+        folder = sys.argv[1]  # Get the folder path from the command-line argument
+        if os.path.exists(folder) and os.path.isdir(folder):
+            window.lineEdit_nat.setText(folder)  # Set the folder path in the GUI
+            window.select_file_nat()
+        else:
+            pass
 
     # Show the main window
     window.show()
