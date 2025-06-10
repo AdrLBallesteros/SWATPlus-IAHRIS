@@ -1,3 +1,24 @@
+"""
+/***************************************************************************
+ **SWATPlus-IAHRIS
+ **A QGIS plugin
+ **A software that links SWATPlus to IAHRIS to automatically generate reports on Indicators of Hydrologic Alteration in RIverS.
+----------------------------------------------------
+        begin                : **May-2025
+        copyright            : **COPYRIGHT
+        email                : **alopbal@upv.es
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 3 of the License, or     *
+ *   any later version.                                                    *
+ *                                                                         *
+ ***************************************************************************/
+"""
+
 from PyQt6 import QtWidgets, uic
 from PyQt6.QtCore import QDate
 import os
