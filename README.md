@@ -16,6 +16,17 @@ The tool allows users to select daily simulated streamflow series from any chann
 
 SWAT+IAHRIS also supports observed streamflow data supplied through CSV files, allowing measured records to be used together with, or instead of, simulated SWAT+ outputs.
 
+## Overview
+
+Watch this video for an introduction to SWAT+IAHRIS and how it can be used to assess hydrologic alteration in rivers from SWAT+ outputs:
+
+<p align="center">
+  <a href="https://youtu.be/Lmv2JN2PA6c">
+    <img src="https://img.youtube.com/vi/Lmv2JN2PA6c/hqdefault.jpg" alt="SWAT+IAHRIS: How to Assess Hydrologic Alteration in Rivers from SWAT+ Outputs">
+  </a>
+</p>
+
+
 ## Main capabilities
 
 - Supports natural and altered flow series from SWAT+ scenarios or external CSV files.
