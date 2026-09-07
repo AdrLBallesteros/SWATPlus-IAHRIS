@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "swatplus-iahris"
+version = "1.2"
+description = "Links SWAT+ daily streamflow outputs with IAHRIS to automatically generate reports on Indicators of Hydrologic Alteration in RIverS."
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+license = { text = "GPL-3.0-or-later" }
+authors = [
+    { name = "Adrian Lopez-Ballesteros", email = "alopbal@upv.es" },
+]
+keywords = ["SWAT+", "IAHRIS", "hydrology", "hydrologic alteration", "streamflow"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Win32 (MS Windows)",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Hydrology",
+]
+
+# Versions below are the ones the released application was built and tested with.
+dependencies = [
+    "PyQt6==6.4.2",
+    "pandas==2.2.3",
+    "xlwings==0.33.9",
+]
+
+[project.optional-dependencies]
+# Test suite, see test/README.md.
+test = [
+    "pytest>=8.0",
+]
+# Tooling used to edit the Qt Designer forms and build the distributed executable.
+build = [
+    "pyqt6-tools==6.4.2.3.3",
+    "pyinstaller==6.12.0",
+    "auto-py-to-exe==2.46.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/AdrLBallesteros/SWATPlus-IAHRIS"
+Repository = "https://github.com/AdrLBallesteros/SWATPlus-IAHRIS.git"
+
+[tool.setuptools]
+py-modules = ["main"]
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
+# The tests that drive Excel are opted into with 'pytest -m excel'.
+addopts = "-m 'not excel'"
+markers = [
+    "excel: needs Microsoft Excel installed (drives it through xlwings)",
+]
