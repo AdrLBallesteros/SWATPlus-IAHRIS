@@ -1,0 +1,72 @@
+cff-version: 1.2.0
+title: SWAT+IAHRIS
+message: >-
+  If you use this software, please cite it using the metadata from this file.
+type: software
+authors:
+  - given-names: Adrián
+    family-names: López-Ballesteros
+    email: alopbal@upv.es
+    orcid: 'https://orcid.org/0000-0001-6350-5653'
+    affiliation: >-
+      Department of Computer Engineering, Universitat Politècnica de València,
+      46022 Valencia, Spain
+  - given-names: Carolina
+    family-names: Martínez Santa-María
+    affiliation: >-
+      Department of Forest and Environmental Engineering and Management,
+      Universidad Politécnica de Madrid, 28040 Madrid, Spain
+  - given-names: José A.
+    family-names: Fernández-Yuste
+    affiliation: >-
+      Department of Forest and Environmental Engineering and Management,
+      Universidad Politécnica de Madrid, 28040 Madrid, Spain
+  - given-names: Javier
+    family-names: Senent-Aparicio
+    affiliation: >-
+      Centro de Investigaciones sobre Desertificación, CSIC-UV-GVA,
+      46113 Valencia, Spain
+abstract: >-
+  Flow regimes play a fundamental role in shaping river geomorphology, ecological
+  processes, and aquatic community structure. However, climate change and human
+  interventions are increasingly modifying natural hydrological regimes, leading to
+  altered flow patterns, biodiversity loss, water scarcity, and disruption of
+  hydro-ecological conditions. Hydrological models provide a robust framework for
+  reconstructing natural conditions and assessing hydrologic alteration under
+  different scenarios. In this context, SWAT+ (Soil and Water Assessment Tool) is a
+  widely used process-based hydrological model capable of simulating daily streamflow
+  across complex river basins, while IAHRIS (Indicators of Hydrologic Alteration in
+  RIverS) provides an indicator-based framework to characterize natural and altered
+  flow regimes. Nevertheless, coupling SWAT+ outputs with IAHRIS remains a
+  time-consuming and error-prone task due to differences in data structures and
+  preprocessing requirements. This study presents SWAT+IAHRIS, an open-source software
+  tool developed in Python to automate the post-processing of SWAT+ daily streamflow
+  outputs for hydrologic alteration assessment using the IAHRIS framework. The tool is
+  directly integrated into the SWAT+ environment and automatically generates seven
+  structured Excel reports covering natural and altered flow characterization,
+  natural-altered regime comparison, flow-duration curves, habitual-flow indicators,
+  floods, droughts, and environmental significance. The applicability of SWAT+IAHRIS is
+  demonstrated through two representative case studies in the Sorbe River basin,
+  central Spain: the assessment of dam-induced flow alteration downstream of the Beleña
+  reservoir and the evaluation of long-term climate-change impacts on river flow
+  regimes. Results demonstrate that SWAT+IAHRIS provides an efficient, reproducible,
+  and user-friendly bridge between process-based hydrological modelling and
+  indicator-based hydrologic alteration diagnosis, supporting standardized assessments
+  of hydrologic alteration in river systems affected by climate change and human
+  regulation.
+keywords:
+  - Hydrologic alteration
+  - SWAT+
+  - IAHRIS
+  - Flow regime
+  - Decision-support software
+license: GPL-3.0-or-later
+version: '1.2'
+date-released: '2026-09-07'
+repository-code: 'https://github.com/AdrLBallesteros/SWATPlus-IAHRIS'
+url: 'https://github.com/AdrLBallesteros/SWATPlus-IAHRIS'
+contact:
+  - given-names: Adrián
+    family-names: López-Ballesteros
+    email: alopbal@upv.es
+    orcid: 'https://orcid.org/0000-0001-6350-5653'
